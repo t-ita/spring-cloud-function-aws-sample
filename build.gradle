@@ -1,0 +1,66 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.0.0' // 追加
+    id 'maven' // 追加
+    id "org.springframework.boot.experimental.thin-launcher" version "1.0.24.RELEASE" // 追加
+}
+
+group = 'com.myexample'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// 以下を追加
+assemble.dependsOn = [shadowJar, thinJar]
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.myexample.serverless.aws.SpringCloudFunctionAwsSampleApplication'
+    }
+}
+
+import com.github.jengelman.gradle.plugins.shadow.transformers.*
+
+shadowJar {
+    archiveClassifier = 'aws'
+//    dependencies {
+//        exclude(
+//                dependency("org.springframework.cloud:spring-cloud-function-web:3.0.10.RELEASE"))
+//    }
+    // Required for Spring
+    mergeServiceFiles()
+    append 'META-INF/spring.handlers'
+    append 'META-INF/spring.schemas'
+    append 'META-INF/spring.tooling'
+    transform(PropertiesFileTransformer) {
+        paths = ['META-INF/spring.factories']
+        mergeStrategy = "append"
+    }
+}
+// 以上
+
+dependencies {
+    compile 'org.springframework.cloud:spring-cloud-function-adapter-aws:3.0.10.RELEASE' // 追加
+    implementation 'com.amazonaws:aws-lambda-java-events:3.3.1' // 追加
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1' // 追加
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
