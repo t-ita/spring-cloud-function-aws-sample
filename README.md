@@ -125,7 +125,7 @@ spring.cloud.function.scan.packages=com.myexample.serverless.aws.functions
 * コールドスタートに時間がかかるのでタイムアウトを30秒に
 * ランタイムは Java11
 * メモリを 256MB
-* ハンドラは `com.myexample.serverless.aws.EventHandler`
+* ハンドラは `org.springframework.cloud.function.adapter.aws.SpringBootStreamHandler`
 
 # テスト
 * AWS Lambda コンソールの「テスト」を使う
