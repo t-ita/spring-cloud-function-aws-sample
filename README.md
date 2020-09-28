@@ -112,20 +112,6 @@ public class Greet implements Function<Greet.Greeting, Greet.Greeting> {
 }
 ```
 
-# Handler を作成
-* メインクラスと同じパッケージに、Lambdaのリクエストを受け取るためのハンドラ、EventHandlerを作成する
-```
-package com.myexample.serverless.aws;
-
-import com.myexample.serverless.aws.functions.Greet;
-import org.springframework.cloud.function.adapter.aws.SpringBootRequestHandler;
-
-public class EventHandler extends SpringBootRequestHandler<Greet.Greeting, Greet.Greeting> {
-}
-```
-* 基本的な機能は継承元に実装されているので、空白で構わない
-* 今回は、Greeting クラスを受け取って Greeting クラスを返す関数なので、型引数に Greeting を指定
-
 # application.properties を編集
 * 関数クラスを読み込むように、以下を追加
 ```
